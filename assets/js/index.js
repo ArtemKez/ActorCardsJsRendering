@@ -102,13 +102,15 @@ function createStructure() {
 }
 
 function createCardElem(actor) {
-    const {
+    let {
         id = 'no_id',
         firstName = 'no_name',
         lastName = 'no_last_name',
         profilePicture = null,
         contacts = [],
     } = actor;
+    firstName = firstName || 'no_name';
+    lastName = lastName || 'no_last_name';
     const avatar = createCardImgBlock({profilePicture, firstName, lastName});
     const title = createElement('p', {
         classNames: ['p-style']
@@ -151,17 +153,24 @@ function createContactsBlock(arrContacts) {
     }, ...arrIcons);
 }
 
+function onErrorImageCallback(ev) {
+    this.style.display = 'none';
+}
+
 function createCardImgBlock({profilePicture, firstName, lastName}) {
-    console.log({profilePicture, firstName, lastName})
     const imgElem = createElement('img', {
         attributes: {
             src: profilePicture,
             alt: `${firstName} ${lastName}`
+        },
+        events: {
+            error: onErrorImageCallback
         }
     });
+    const backgroundElem = createElement('div', {}, `${firstName[0]} ${lastName[0]}`);
     return createElement('div', {
         classNames: ['img-block']
-    }, imgElem);
+    }, backgroundElem, imgElem);
 }
 
 function getKeywordFromLink(url) {

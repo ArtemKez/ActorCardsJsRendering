@@ -38,7 +38,7 @@ html,
     flex-wrap: wrap;
 }
 
-.card.selected{
+.card.selected {
     border: 3px solid #62e719;
 }
 
@@ -65,15 +65,33 @@ html,
     padding: 2px;
     border-radius: 50%;
     border: 2px solid rgb(224, 100, 108);
+    position: relative;
 }
 
 .img-block img {
     width: 100px;
     height: 100px;
     border-radius: 50%;
+    object-fit: cover;
+    position: absolute;
+    top: 2px;
 }
 
-a{
+.img-block div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #643600;
+    font-family: 'Roboto', sans-serif;
+    color: rgb(224, 100, 108);
+    letter-spacing: -5px;
+}
+
+a {
     text-decoration: none;
 }
 
@@ -87,7 +105,7 @@ a{
     justify-content: center;
 }
 
-.icon-box{
+.icon-box {
     margin: 0 5px;
     display: flex;
     justify-content: center;
@@ -102,7 +120,7 @@ a{
     max-width: 40px;
 }
 
-.white-icon{
+.white-icon {
     font-size: 20px;
     color: white;
 }
