@@ -22,7 +22,7 @@ html,
     margin-top: 0;
 }
 
-.textColor {
+.text-color {
     color: rgb(224, 100, 108);
     text-align: center;
     font-family: 'Roboto', sans-serif;
@@ -43,6 +43,7 @@ html,
 }
 
 .card {
+    min-height: 300px;
     box-sizing: border-box;
     cursor: pointer;
     position: relative;

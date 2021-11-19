@@ -56,9 +56,9 @@ function getActorNameById(id) {
     }
 }
 
-function f(url) {
-    if (map.has(fit(url))) {
-        return map.get(fit(url));
+function getClassForSocialIcon(url) {
+    if (map.has(getKeywordFromLink(url))) {
+        return map.get(getKeywordFromLink(url));
     }
     return false
 }
@@ -78,49 +78,93 @@ function createElement(type = 'div', {attributes = {}, classNames = [], events =
 
 function createStructure() {
     const title = createElement('p', {
-        classNames: ['textColor']
+        classNames: ['text-color']
     }, 'ACTORS');
     root.append(title)
     const cards = [];
     for (let i = 0; i < actorsList.length; i++) {
-        cards.push(createElement(actorsList[i]));
+        cards.push(createCardElem(actorsList[i]));
     }
+    const cardWrapper = createElement('div', {classNames: ['card-block']}, ...cards)
+    root.append(cardWrapper)
+    const selectedActorsWrapper = createElement('p',
+        {
+            attributes: {
+                id: 'chosen-actors'
+            },
+            classNames: ['text-color']
+        }, 'you choosed')
+    const parentSelectedActorsWrapper = createElement('div',
+        {
+            classNames: ['list']
+        }, selectedActorsWrapper)
+    root.append(parentSelectedActorsWrapper)
 }
-
-// <div className="card" data-actor_id="1">
-//     <div className="img-block">
-//         <img
-//             src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Dwayne_Johnson_2%2C_2013.jpg/800px-Dwayne_Johnson_2%2C_2013.jpg"
-//             alt="#">
-//     </div>
-//     <p className="p-style">Scarlett Johansson</p>
-//     <div className="icons">
-//         <a href="#" target="_blank" className="icon-box">
-//             <i className="white-icon fab fa-brands fa-twitter"></i>
-//         </a>
-//         <a href="#" target="_blank" className="icon-box">
-//             <i className="white-icon fab fa-brands fa-facebook-f"></i>
-//         </a>
-//         <a href="#" target="_blank" className="icon-box">
-//             <i className="white-icon fab fa-brands fa-instagram"></i>
-//         </a>
-//     </div>
-// </div>
 
 function createCardElem(actor) {
-const {
-    id = 'no_id',
-    firstName = 'no_name',
-    lastName = 'no_last_name',
-    profilePicture = null,
-    contacts = [],
-} = actor;
-
-
-
+    const {
+        id = 'no_id',
+        firstName = 'no_name',
+        lastName = 'no_last_name',
+        profilePicture = null,
+        contacts = [],
+    } = actor;
+    const avatar = createCardImgBlock({profilePicture, firstName, lastName});
+    const title = createElement('p', {
+        classNames: ['p-style']
+    }, `${firstName} ${lastName}`);
+    const contactsBlock = createContactsBlock(contacts);
+    return createElement('div', {
+        attributes: {'data-actor_id': id},
+        classNames: ['card'],
+        events: {
+            click: toggleActor
+        }
+    }, avatar, title, contactsBlock);
 }
 
-function fit(url) {
+function createContactsBlock(arrContacts) {
+    const arrIcons = [];
+    const icon_classes = ['white-icon', 'fab', 'fa-brands'];
+    for (let i = 0; i < arrContacts.length; i++) {
+        const link = arrContacts[i];
+        const iconClass = [getClassForSocialIcon(link)];
+        const classes = icon_classes.concat(iconClass);
+        const icon_i = createElement('i', {
+            attributes: {
+                'aria-hidden': 'true'
+            },
+            classNames: classes
+        });
+        const icon_elem = createElement('a', {
+            classNames: ['icon-box'],
+            attributes: {
+                href: link,
+                target: '_blank'
+            }
+        }, icon_i);
+        arrIcons.push(icon_elem);
+    }
+
+    return createElement('div', {
+        classNames: ['icons']
+    }, ...arrIcons);
+}
+
+function createCardImgBlock({profilePicture, firstName, lastName}) {
+    console.log({profilePicture, firstName, lastName})
+    const imgElem = createElement('img', {
+        attributes: {
+            src: profilePicture,
+            alt: `${firstName} ${lastName}`
+        }
+    });
+    return createElement('div', {
+        classNames: ['img-block']
+    }, imgElem);
+}
+
+function getKeywordFromLink(url) {
     let urlObj = new URL(url);
     urlObj = urlObj.host.split('.')
     for (let i = 0; i < urlObj.length; i++) {
@@ -134,14 +178,6 @@ function fit(url) {
 (_ => {
     getData().then(data => {
         actorsList = data;
-        [...document.querySelectorAll('.card')].forEach(el => {
-            el.addEventListener('click', toggleActor)
-        })
+        createStructure()
     })
-
 })()
-
-
-
-
-
